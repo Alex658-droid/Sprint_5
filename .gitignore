@@ -1,0 +1,25 @@
+# Виртуальное окружение
+venv/
+
+# Кэш Python
+__pycache__/
+*.pyc
+
+# Кэш тестов
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# Логи
+*.log
+
+# Файлы отладки (картинки и скрипты)
+debug_*.png
+debug_*.html
+debug_*.py
+
+# Драйвер браузера
+chromedriver.exe
+chromedriver-win64/
