@@ -71,3 +71,7 @@ LOCATOR_TAB_BTN_FILLINGS = (By.XPATH, "//div[contains(@class, 'tab_tab')][normal
 
 # Карточка ингредиента (класс проверен дампом: BurgerIngredient_ingredient__1TVf6)
 LOCATOR_INGREDIENT_CARD = (By.CSS_SELECTOR, "[class*='BurgerIngredient_ingredient__']")
+
+LOCATOR_LOGIN_HEADER = (By.XPATH, "//h2[normalize-space()='Вход']")
+
+LOCATOR_REGISTRATION_HEADER = (By.XPATH, "//h2[normalize-space()='Регистрация']")

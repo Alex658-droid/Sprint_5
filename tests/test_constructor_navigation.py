@@ -1,16 +1,18 @@
 import logging
 import time
+
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-logger = logging.getLogger(__name__)
-
+from utils.data import BASE_URL
 from utils.locators import (
     LOCATOR_TAB_BTN_BUNS,
     LOCATOR_TAB_BTN_SAUCES,
     LOCATOR_TAB_BTN_FILLINGS,
     LOCATOR_INGREDIENT_CARD,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def wait_for_ingredients_loaded(driver, wait, locator):
@@ -25,27 +27,30 @@ def tab_is_active(driver, locator):
     return "current" in cls
 
 
-def test_constructor_tabs_navigation(logged_in_driver, base_url):
-    driver = logged_in_driver
-    wait = WebDriverWait(driver, 45)
+class TestConstructorNavigation:
 
-    driver.get(f"{base_url}/")
-    time.sleep(2)
-    wait_for_ingredients_loaded(driver, wait, LOCATOR_INGREDIENT_CARD)
+    def test_constructor_tabs_navigation(self, logged_in_driver):
+        driver = logged_in_driver
+        wait = WebDriverWait(driver, 45)
 
-    # По умолчанию активна вкладка «Булки»
-    bun_tab = wait.until(EC.element_to_be_clickable(LOCATOR_TAB_BTN_BUNS))
-    assert bun_tab.is_displayed()
-    assert tab_is_active(driver, LOCATOR_TAB_BTN_BUNS), "Вкладка «Булки» должна быть активной по умолчанию"
+        driver.get(f"{BASE_URL}/")
+        time.sleep(2)
+        wait_for_ingredients_loaded(driver, wait, LOCATOR_INGREDIENT_CARD)
 
-    # Переключаемся на «Соусы»
-    sauce_tab = wait.until(EC.element_to_be_clickable(LOCATOR_TAB_BTN_SAUCES))
-    sauce_tab.click()
-    wait.until(lambda d: tab_is_active(d, LOCATOR_TAB_BTN_SAUCES))
-    wait_for_ingredients_loaded(driver, wait, LOCATOR_INGREDIENT_CARD)
+        # По умолчанию активна вкладка «Булки»
+        bun_tab = wait.until(EC.element_to_be_clickable(LOCATOR_TAB_BTN_BUNS))
+        assert bun_tab.is_displayed()
+        assert tab_is_active(driver, LOCATOR_TAB_BTN_BUNS), \
+            "Вкладка «Булки» должна быть активной по умолчанию"
 
-    # Переключаемся на «Начинки»
-    filling_tab = wait.until(EC.element_to_be_clickable(LOCATOR_TAB_BTN_FILLINGS))
-    filling_tab.click()
-    wait.until(lambda d: tab_is_active(d, LOCATOR_TAB_BTN_FILLINGS))
-    wait_for_ingredients_loaded(driver, wait, LOCATOR_INGREDIENT_CARD)
+        # Переключаемся на «Соусы»
+        sauce_tab = wait.until(EC.element_to_be_clickable(LOCATOR_TAB_BTN_SAUCES))
+        sauce_tab.click()
+        wait.until(lambda d: tab_is_active(d, LOCATOR_TAB_BTN_SAUCES))
+        wait_for_ingredients_loaded(driver, wait, LOCATOR_INGREDIENT_CARD)
+
+        # Переключаемся на «Начинки»
+        filling_tab = wait.until(EC.element_to_be_clickable(LOCATOR_TAB_BTN_FILLINGS))
+        filling_tab.click()
+        wait.until(lambda d: tab_is_active(d, LOCATOR_TAB_BTN_FILLINGS))
+        wait_for_ingredients_loaded(driver, wait, LOCATOR_INGREDIENT_CARD)

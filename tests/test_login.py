@@ -1,13 +1,15 @@
 import pytest
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from utils.data import BASE_URL, EXISTING_EMAIL, EXISTING_PASSWORD
 from utils.locators import (
     LOCATOR_BTN_LOGIN_MAIN,
     LOCATOR_BTN_PERSONAL_CABINET,
     LOCATOR_LOGIN_BUTTON,
     LOCATOR_LOGIN_TITLE,
+    LOCATOR_LOGIN_INPUT_EMAIL,
+    LOCATOR_LOGIN_INPUT_PASSWORD,
 )
 
 
@@ -15,33 +17,35 @@ from utils.locators import (
     ("Главная: кнопка «Войти в аккаунт»", LOCATOR_BTN_LOGIN_MAIN),
     ("Шапка: ссылка «Личный Кабинет»", LOCATOR_BTN_PERSONAL_CABINET),
 ])
-def test_login_via_different_buttons(driver, base_url, scenario, locator):
-    driver.get(base_url)
-    wait = WebDriverWait(driver, 30)
+class TestLogin:
 
-    # 1. Кликаем по точке входа
-    btn = wait.until(EC.element_to_be_clickable(locator))
-    btn.click()
+    def test_login_via_different_buttons(self, driver, scenario, locator):
+        driver.get(BASE_URL)
+        wait = WebDriverWait(driver, 30)
 
-    # 2. Для неавторизованного пользователя обе точки ведут на /login
-    wait.until(lambda d: "/login" in d.current_url)
+        # 1. Кликаем по точке входа
+        btn = wait.until(EC.element_to_be_clickable(locator))
+        btn.click()
 
-    # 3. Убеждаемся, что открылась форма входа
-    wait.until(EC.visibility_of_element_located(LOCATOR_LOGIN_TITLE))
-    wait.until(EC.presence_of_element_located(LOCATOR_LOGIN_BUTTON))
+        # 2. Для неавторизованного пользователя обе точки ведут на /login
+        wait.until(lambda d: "/login" in d.current_url)
 
-    # 4. Логинимся (используй СВОИ реальные данные)
-    email_field = wait.until(EC.presence_of_element_located((By.NAME, "name")))
-    password_field = wait.until(EC.presence_of_element_located((By.NAME, "Пароль")))
+        # 3. Убеждаемся, что открылась форма входа
+        wait.until(EC.visibility_of_element_located(LOCATOR_LOGIN_TITLE))
+        wait.until(EC.presence_of_element_located(LOCATOR_LOGIN_BUTTON))
 
-    email_field.click()
-    email_field.send_keys("sentestov2000@yandex.ru")   # <-- свой email
+        # 4. Логинимся данными из data-модуля
+        email_field = wait.until(EC.presence_of_element_located(LOCATOR_LOGIN_INPUT_EMAIL))
+        password_field = wait.until(EC.presence_of_element_located(LOCATOR_LOGIN_INPUT_PASSWORD))
 
-    password_field.click()
-    password_field.send_keys("1234567890")            # <-- свой пароль
+        email_field.click()
+        email_field.send_keys(EXISTING_EMAIL)
 
-    login_btn = wait.until(EC.element_to_be_clickable(LOCATOR_LOGIN_BUTTON))
-    driver.execute_script("arguments[0].click();", login_btn)
+        password_field.click()
+        password_field.send_keys(EXISTING_PASSWORD)
 
-    # 5. Вход успешен, если мы ушли со страницы /login
-    wait.until(lambda d: "/login" not in d.current_url)
+        login_btn = wait.until(EC.element_to_be_clickable(LOCATOR_LOGIN_BUTTON))
+        driver.execute_script("arguments[0].click();", login_btn)
+
+        # 5. Вход успешен, если мы ушли со страницы /login
+        wait.until(lambda d: "/login" not in d.current_url)
